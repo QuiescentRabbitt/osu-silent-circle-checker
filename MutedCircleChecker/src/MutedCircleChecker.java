@@ -101,9 +101,17 @@ public class MutedCircleChecker extends JPanel {
 			        	}
 			        	
 			        	if (sectionCount == 10) {
-			        		if (!line.contains("|") && !line.contains(".wav") && !line.contains(".mp3")) {
-							int circleOffset = Integer.parseInt(line.split(",")[2]);
-							circleOffsetList.add(circleOffset);
+			        		if (!line.contains("|")) {      
+				        			if (Integer.parseInt(line.split(":")[3]) != 0) {
+				        				if (Integer.parseInt(line.split(":")[3]) < 6) {
+					        				int circleOffset = Integer.parseInt(line.split(",")[2]);
+				        					outputArea.append("Silent circle at " + circleOffset + "\n");
+				        				}
+				        			} else {
+					        			int circleOffset = Integer.parseInt(line.split(",")[2]);
+						        		circleOffsetList.add(circleOffset);
+				        			}
+			        			
 			        		}
 			        	}
 			        }
@@ -141,14 +149,13 @@ public class MutedCircleChecker extends JPanel {
 			        }
 		        
 		        }
-		        System.out.println();
 		        for (int circleOffset : silentCircleList) {	
 		        	outputArea.append("Silent circle at " + circleOffset + "\n");
 		        }
+		        
 		        if (silentCircleList.size()==0) {
 		        	outputArea.append("No Silent Circles found");
 		        }
-		        
 		        
 		        
 		    } catch(FileNotFoundException ex1) {
