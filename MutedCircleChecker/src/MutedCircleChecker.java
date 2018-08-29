@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ import javax.swing.JTextField;
 
 public class MutedCircleChecker extends JPanel {
 	static JTextField pathField = new JTextField(20);
-	static JTextArea outputArea = new JTextArea(10,50);
+	static JTextArea outputArea = new JTextArea(12,20);
 	JButton check = new JButton();
 	JButton browse = new JButton();
 	public MutedCircleChecker() {
@@ -29,6 +30,7 @@ public class MutedCircleChecker extends JPanel {
 		browse.addActionListener(new OpenListener());
 		pathField.setEditable(false);
 		outputArea.setEditable(false);
+		outputArea.setBackground(Color.LIGHT_GRAY);
 		this.add(pathField);
 		this.add(browse);
 		this.add(check);
