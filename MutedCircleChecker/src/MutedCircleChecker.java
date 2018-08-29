@@ -79,6 +79,8 @@ public class MutedCircleChecker extends JPanel {
 			ArrayList<TimingPoint> timingPointList = new ArrayList<TimingPoint>();
 			ArrayList<Integer> circleOffsetList = new ArrayList<Integer>();
 			ArrayList<Integer> silentCircleList = new ArrayList<Integer>();
+			ArrayList<Integer> sliderOffsetList = new ArrayList<Integer>();
+			ArrayList<Integer> silentSliderList = new ArrayList<Integer>();
 			File fileName = new File(pathField.getText());
 		    String line = "";
 		    int sectionCount = 1;
@@ -114,6 +116,9 @@ public class MutedCircleChecker extends JPanel {
 						        		circleOffsetList.add(circleOffset);
 				        			}
 			        			
+			        		} else {
+				        		int sliderOffset = Integer.parseInt(line.split(",")[2]);
+					        	sliderOffsetList.add(sliderOffset);  						        			
 			        		}
 			        	}
 			        }
@@ -151,11 +156,28 @@ public class MutedCircleChecker extends JPanel {
 			        }
 		        
 		        }
+		        for (int sliderOffset : sliderOffsetList) {	
+		        	
+			        for (TimingPoint timingPoint : timingPointList) {        	  
+			        	
+			        	if (timingPoint.volume<6) {
+			        		if (sliderOffset >= timingPoint.offset && sliderOffset < timingPoint.ending) {
+			        			silentSliderList.add(sliderOffset);
+			        		}
+			        	}
+			        	
+			        }
+		        
+		        }
 		        for (int circleOffset : silentCircleList) {	
 		        	outputArea.append("Silent circle at " + circleOffset + "\n");
 		        }
 		        
-		        if (silentCircleList.size()==0) {
+		        for (int sliderOffset : silentSliderList) {	
+		        	outputArea.append("Silent slider at " + sliderOffset + "\n");
+		        }
+		        
+		        if (silentCircleList.size() == 0 && silentSliderList.size() == 0) {
 		        	outputArea.append("No Silent Circles found");
 		        }
 		        
