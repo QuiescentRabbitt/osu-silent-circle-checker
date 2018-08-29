@@ -101,9 +101,9 @@ public class MutedCircleChecker extends JPanel {
 			        	}
 			        	
 			        	if (sectionCount == 10) {
-			        		if (!line.contains("|")) {
-			        		int circleOffset = Integer.parseInt(line.split(",")[2]);
-			        		circleOffsetList.add(circleOffset);
+			        		if (!line.contains("|") && !line.contains(".wav") && !line.contains(".mp3")) {
+							int circleOffset = Integer.parseInt(line.split(",")[2]);
+							circleOffsetList.add(circleOffset);
 			        		}
 			        	}
 			        }
@@ -132,7 +132,7 @@ public class MutedCircleChecker extends JPanel {
 		        	
 			        for (TimingPoint timingPoint : timingPointList) {        	  
 			        	
-			        	if (timingPoint.volume==5) {
+			        	if (timingPoint.volume<6) {
 			        		if (circleOffset >= timingPoint.offset && circleOffset < timingPoint.ending) {
 			        			silentCircleList.add(circleOffset);
 			        		}
