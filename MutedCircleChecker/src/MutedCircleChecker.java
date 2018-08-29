@@ -145,7 +145,9 @@ public class MutedCircleChecker extends JPanel {
 		        for (int circleOffset : silentCircleList) {	
 		        	outputArea.append("Silent circle at " + circleOffset + "\n");
 		        }
-		        
+		        if (silentCircleList.size()==0) {
+		        	outputArea.append("No Silent Circles found");
+		        }
 		        
 		        
 		        
