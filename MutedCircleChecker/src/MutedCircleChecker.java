@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -9,6 +11,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -20,21 +24,29 @@ import javax.swing.JTextField;
 
 public class MutedCircleChecker extends JPanel {
 	static JTextField pathField = new JTextField(20);
+	static JTextField sampleField = new JTextField(20);
 	static JTextArea outputArea = new JTextArea(12,20);
 	JButton check = new JButton();
 	JButton browse = new JButton();
 	public MutedCircleChecker() {
+		BoxLayout experimentLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
+		Box buttons = new Box(0);
 		check.addActionListener(new CheckListener());
+		this.setLayout(experimentLayout);
 		check.setText("Check .osu");
 		browse.setText("Browse");
+		browse.setLocation(0, 0);
 		browse.addActionListener(new OpenListener());
 		pathField.setEditable(false);
 		outputArea.setEditable(false);
 		outputArea.setBackground(Color.LIGHT_GRAY);
+		buttons.add(browse);
+		buttons.add(check);
+		this.add(buttons);
+		sampleField.setText("Silent Addition");
 		this.add(pathField);
-		this.add(browse);
-		this.add(check);
 		this.add(outputArea);	
+		this.add(sampleField);
 	}
 
 	public static void main (String args[]) {
@@ -42,9 +54,9 @@ public class MutedCircleChecker extends JPanel {
 		gridFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		gridFrame.getContentPane().add(new MutedCircleChecker());
+		gridFrame.setVisible(true);	   
+		gridFrame.setPreferredSize(new Dimension(400, 300));
 		gridFrame.pack();
-		gridFrame.setVisible(true);	    
-		
 	}
 	
 	
@@ -69,13 +81,15 @@ public class MutedCircleChecker extends JPanel {
 	}
 	
 	public static class CheckListener implements ActionListener {
-
+		//Sampleset (1) Normal, (2) Soft, (3) Drum
+		//Addition (0) Default, (1) Custom, (2+) other custom
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
 
 			Writer writer = null;
-			
+			int silentSample = 0;
+			int silentAddition = 0;
 			ArrayList<TimingPoint> timingPointList = new ArrayList<TimingPoint>();
 			ArrayList<Integer> circleOffsetList = new ArrayList<Integer>();
 			ArrayList<Integer> silentCircleList = new ArrayList<Integer>();
@@ -85,6 +99,25 @@ public class MutedCircleChecker extends JPanel {
 		    String line = "";
 		    int sectionCount = 1;
 		    int currentLine = 0;
+		    try {
+			    if (sampleField.getText().length() > 0 && !sampleField.getText().equals("Silent Addition")) {
+			    	String sampleAddition = sampleField.getText();
+			    	
+			    	if (sampleAddition.substring(0, 1).equalsIgnoreCase("S")) {
+			    		silentSample = 2;
+			    	} else if (sampleAddition.substring(0, 1).equalsIgnoreCase("N")) {
+			    		silentSample = 1;
+			    	} else {
+			    		silentSample = 3;
+			    	}
+			    	
+			    	silentAddition = Integer.parseInt(sampleAddition.substring(1));
+			    }
+			    
+		    } catch (Exception e) {
+		    	outputArea.append("Error reading sample and addition");
+		    }
+		    
 		    try {	
 		    	
 		        FileReader fileReader = new FileReader(fileName);
@@ -100,8 +133,11 @@ public class MutedCircleChecker extends JPanel {
 			        	}        	
 			        	if (sectionCount == 7) {
 			        		int timingOffset = Integer.parseInt(line.split(",")[0]);
-			        		int volume = Integer.parseInt(line.split(",")[5]);
-			        		timingPointList.add(new TimingPoint(timingOffset, volume));
+			        		int volume = Integer.parseInt(line.split(",")[5]);		        		
+			        		if (Integer.parseInt(line.split(",")[3]) == silentSample && Integer.parseInt(line.split(",")[4]) == silentAddition) {
+			        			volume = 5;
+			        		}			        		    		
+			        		timingPointList.add(new TimingPoint(timingOffset, volume));			        		
 			        	}
 			        	
 			        	if (sectionCount == 10) {
