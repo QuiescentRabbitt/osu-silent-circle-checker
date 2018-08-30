@@ -205,12 +205,20 @@ public class MutedCircleChecker extends JPanel {
 			        }
 		        
 		        }
-		        for (int circleOffset : silentCircleList) {	
-		        	outputArea.append("Silent circle at " + circleOffset + "\n");
+			for (int circleOffset : silentCircleList) {	
+		        	long minutes = TimeUnit.MILLISECONDS.toMinutes(circleOffset);
+		        	circleOffset -= (minutes*60000);
+		        	long seconds = TimeUnit.MILLISECONDS.toSeconds(circleOffset);
+		        	circleOffset -= (seconds*1000);
+		        	outputArea.append("Silent circle at " + minutes  + ":" + seconds + ":" + circleOffset + "\n");
 		        }
 		        
 		        for (int sliderOffset : silentSliderList) {	
-		        	outputArea.append("Silent slider at " + sliderOffset + "\n");
+		        	long minutes = TimeUnit.MILLISECONDS.toMinutes(sliderOffset);
+		        	sliderOffset -= (minutes*60000);
+		        	long seconds = TimeUnit.MILLISECONDS.toSeconds(sliderOffset);
+		        	sliderOffset -= (seconds*1000);
+		        	outputArea.append("Silent slider at " + minutes  + ":" + seconds + ":" + sliderOffset + "\n");
 		        }
 		        
 		        if (silentCircleList.size() == 0 && silentSliderList.size() == 0) {
