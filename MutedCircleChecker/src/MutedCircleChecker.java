@@ -114,7 +114,7 @@ public class MutedCircleChecker extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
-
+			outputArea.setText("");
 			Writer writer = null;
 			int silentSample = 0;
 			int silentAddition = 0;
