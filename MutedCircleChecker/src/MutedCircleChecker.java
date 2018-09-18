@@ -1,6 +1,10 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -10,6 +14,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,8 +63,30 @@ public class MutedCircleChecker extends JPanel {
 		gridFrame.setVisible(true);	   
 		gridFrame.setPreferredSize(new Dimension(400, 300));
 		gridFrame.pack();
+		
+		//allows dropping file instead of using browse
+		DropTarget d = new DropTarget() {
+			private static final long serialVersionUID = 6511786488901217011L;
+
+			public synchronized void drop(DropTargetDropEvent evt) {
+				try {
+					evt.acceptDrop(DnDConstants.ACTION_COPY);
+					List<File> droppedFiles = (List<File>) evt.getTransferable()
+							.getTransferData(DataFlavor.javaFileListFlavor);
+						pathField.setText(droppedFiles.get(0).getPath());
+					
+
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		};
+		outputArea.setDropTarget(d);
+
 	}
 	
+
 	
 	public static class OpenListener implements ActionListener {
 
@@ -86,7 +114,7 @@ public class MutedCircleChecker extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
-
+			outputArea.setText("");
 			Writer writer = null;
 			int silentSample = 0;
 			int silentAddition = 0;
@@ -206,11 +234,18 @@ public class MutedCircleChecker extends JPanel {
 		        
 		        }
 		        for (int circleOffset : silentCircleList) {	
-		        	outputArea.append("Silent circle at " + circleOffset + "\n");
-		        }
-		        
+		        	long minutes = TimeUnit.MILLISECONDS.toMinutes(circleOffset);
+		        	circleOffset -= (minutes*60000);
+		        	long seconds = TimeUnit.MILLISECONDS.toSeconds(circleOffset);
+		        	circleOffset -= (seconds*1000);	
+		        	outputArea.append("Silent circle at " + minutes  + ":" + seconds + ":" + circleOffset + "\n");
+		        }		        
 		        for (int sliderOffset : silentSliderList) {	
-		        	outputArea.append("Silent slider at " + sliderOffset + "\n");
+		        	long minutes = TimeUnit.MILLISECONDS.toMinutes(sliderOffset);
+		        	sliderOffset -= (minutes*60000);
+		        	long seconds = TimeUnit.MILLISECONDS.toSeconds(sliderOffset);
+		        	sliderOffset -= (seconds*1000);
+		        	outputArea.append("Silent slider at " + minutes  + ":" + seconds + ":" + sliderOffset + "\n");
 		        }
 		        
 		        if (silentCircleList.size() == 0 && silentSliderList.size() == 0) {
@@ -242,4 +277,3 @@ public class MutedCircleChecker extends JPanel {
 	
 	
 }
-
