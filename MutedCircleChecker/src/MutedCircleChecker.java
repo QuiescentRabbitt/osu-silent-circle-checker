@@ -56,7 +56,7 @@ public class MutedCircleChecker extends JPanel {
 	}
 
 	public static void main (String args[]) {
-		JFrame gridFrame = new JFrame ("Silent Circle Checker");
+		JFrame gridFrame = new JFrame ("Muted Object Checker by QuiescentRabbit");
 		gridFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		gridFrame.getContentPane().add(new MutedCircleChecker());
@@ -274,6 +274,5 @@ public class MutedCircleChecker extends JPanel {
 		}
     
 	}
-	
 	
 }
